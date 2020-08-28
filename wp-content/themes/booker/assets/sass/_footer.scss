@@ -1,0 +1,26 @@
+footer{
+    .footer-container{
+        padding: 4rem 0;
+        background: $gray-900;
+        color: $gray-300;
+        a{
+            color: $purple;
+
+            &:hover, &:active{
+                color: lighten($purple, 15%);
+            }
+        }
+    }
+    .footer-bottom{
+        color: $gray-300;
+        background: #000;
+        padding: 0.5rem 0;
+        a{
+            color: $gray-300;
+
+            &:hover, &:active{
+                color: lighten($gray-300, 20%);
+            }
+        }
+    }
+}
