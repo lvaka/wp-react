@@ -1,0 +1,31 @@
+.loading{
+    font-size: 2rem;
+    font-weight: 600;
+    color: $gray-700;
+    span{
+        color: $purple;
+        display: inline-block;
+        animation: hop;
+        animation-iteration-count: infinite;
+        animation-duration: 0.7s;
+        animation-timing: ease-in-out;
+
+        @for $i from 1 through 4 {
+            &:nth-child(#{$i}) {
+                animation-delay: $i * 0.15s;
+            }
+        }
+    }
+}
+
+@keyframes hop{
+    0%{
+        transform: translateY(0);
+    }
+    50%{
+        transform: translateY(-2px);
+    }
+    100%{
+        transform: translateY(0);
+    }
+}

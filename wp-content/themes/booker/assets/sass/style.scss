@@ -16,9 +16,14 @@
 @import "footer";
 @import "navigation";
 @import "posts";
+@import "loading";
 
 .body-content{
     margin-top: 4rem;
     padding-bottom: 4rem;
     min-height: calc(100vh - 240px - 8rem);
+}
+
+.white-bkg{
+    background: #fff;
 }

@@ -1,12 +1,12 @@
-import React, { useEffect, useContext, useReducer } from 'react'
+import React, { useState, useEffect, useContext, useReducer } from 'react'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
 import moment from 'moment'
 import { SiteContext } from '../../app'
-import Categories from '../categories'
+import Categories from './categories'
 import Feat from '../feat'
 
-const Post = props => {
+const PostPrev = props => {
   const { siteAbsUri, siteUri } = useContext(SiteContext)
   const link = props.link.replace(siteAbsUri, siteUri)
   const author = props._embedded.author[0].name
@@ -53,7 +53,7 @@ const Post = props => {
   )
 }
 
-const initState = { page: 1, totalPages: 1, posts: [] }
+const initState = { page: 1, totalPages: 1, posts: [], loading: false }
 
 const postsReducer = (state, action) => {
   const actions = {
@@ -65,6 +65,17 @@ const postsReducer = (state, action) => {
       ...state,
       totalPages: action.totalPages,
       posts: [...state.posts].concat(action.posts)
+    },
+    initState: {
+      ...initState
+    },
+    loading: {
+      ...state,
+      loading: true
+    },
+    loaded: {
+      ...state,
+      loading: false
     }
   }
   return actions[action.type]
@@ -84,20 +95,46 @@ const Posts = props => {
       '_links',
       'categories',
       'tags'].join(',')
-    axios.get(`${siteUri}/wp-json/wp/v2/posts?_embed&_fields=${fields}&page=${state.page}&per_page=5`)
+    const params = [
+      '_embed',
+      `_fields=${fields}`,
+      `page=${state.page}`,
+      'per_page=5'].join('&')
+
+    axios.get(`${siteUri}/wp-json/wp/v2/posts?${params}`)
       .then(res => {
-        dispatch({ type: 'setPosts', totalPages: res.headers['x-wp-totalpages'], posts: res.data })
+        dispatch({
+          type: 'setPosts',
+          totalPages: res.headers['x-wp-totalpages'],
+          posts: res.data
+        })
       })
+      .then(() => dispatch({ type: 'loaded' }))
       .catch(e => console.log(e))
   }
 
-  useEffect(() => getPosts(), [state.page])
+  useEffect(() => {
+    if (state.loading) {
+      getPosts()
+    }
+  }, [state.loading])
+
+  useEffect(() => dispatch({ type: 'loading' }), [state.page])
 
   return (
     <div id='posts'>
-      {state.posts && state.posts.map((post, k) => <Post key={`post-${k}`} {...post} />)}
+      {state.posts &&
+        state.posts.map((post, k) => <PostPrev key={`post-${k}`} {...post} />)}
+      {state.loading &&
+        <div className='loading'>
+                Loading
+          <span>.</span>
+          <span>.</span>
+          <span>.</span>
+          <span>.</span>
+        </div>}
       {state.totalPages > state.page &&
-        <button className='btn btn-primary mt-5' onClick={() => dispatch({ type: 'pageIncrement' })}>
+        <button className='btn btn-primary my-5' onClick={() => dispatch({ type: 'pageIncrement' })}>
           Load More
         </button>}
     </div>
@@ -105,3 +142,4 @@ const Posts = props => {
 }
 
 export default Posts
+export { initState, postsReducer, PostPrev }
