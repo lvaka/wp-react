@@ -72,8 +72,12 @@ function post_contact(WP_REST_Request $req) {
     $params = $req->get_body_params();
     $res;
     if(isset($params['name']) && isset($params['message']) && isset($params['email'])){
+        $subject = 'Message Received from '.$params['name'].' - '.$params['email'];
+        wp_mail('eric@ericjshin.com',
+                $subject,
+                $params['message']);
         $res = new WP_REST_Response(
-            array('data' => $params)
+            'Message received'
         );
         $res->set_status(200);
     } else {

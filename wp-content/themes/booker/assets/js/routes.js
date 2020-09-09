@@ -5,6 +5,7 @@ import About from './components/about'
 import Index from './components/index'
 import Category from './components/post-by-category'
 import Categories from './components/categories'
+import Contact from './components/contact'
 import Tag from './components/post-by-tag'
 import Navigation from './components/navigation'
 import Post from './components/post'
@@ -24,6 +25,7 @@ const Routes = props => {
           <Route path={`${siteUri}/categories/category/:slug`} exact component={Category} />
           <Route path={`${siteUri}/categories`} exact component={Categories} />
           <Route path={`${siteUri}/about`} exact component={About} />
+          <Route path={`${siteUri}/contact`} exact component={Contact} />
           <Route status={401}>
             <h1>401</h1>
           </Route>
